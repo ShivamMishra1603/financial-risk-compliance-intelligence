@@ -25,3 +25,9 @@ indices/
 # Logs
 *.log
 mlruns/
+
+# Project Specific
+llama-3-8b-financial-risk/
+sec-edgar-filings/
+wandb/
+*.zip
