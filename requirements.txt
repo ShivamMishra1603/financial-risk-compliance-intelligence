@@ -1,0 +1,9 @@
+# Data Ingestion
+requests==2.31.0
+pandas==2.2.0
+beautifulsoup4==4.12.3
+lxml==5.1.0
+sec-edgar-downloader==5.0.0
+# pyarrow needed for parquet
+# pyarrow removed due to build issues
+tqdm==4.66.1
