@@ -1,0 +1,35 @@
+services:
+  api:
+    build: .
+    container_name: risk-api
+    ports:
+      - "8000:8000"
+    volumes:
+      # Mount the local model weights into the container
+      - ./llama-3-8b-financial-risk:/app/llama-3-8b-financial-risk
+    env_file:
+      - .env
+    environment:
+      # Use the local path inside the container
+      - ADAPTER_PATH=./llama-3-8b-financial-risk
+    restart: always
+
+  prometheus:
+    image: prom/prometheus
+    container_name: prometheus
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
+    ports:
+      - "9090:9090"
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
+
+  grafana:
+    image: grafana/grafana
+    container_name: grafana
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    depends_on:
+      - prometheus

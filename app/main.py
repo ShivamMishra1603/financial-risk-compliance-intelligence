@@ -2,6 +2,7 @@ from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 from typing import List, Optional
 from contextlib import asynccontextmanager
+from prometheus_fastapi_instrumentator import Instrumentator
 import os
 import torch
 from transformers import AutoTokenizer, AutoModelForCausalLM
@@ -74,6 +75,7 @@ async def lifespan(app: FastAPI):
     model = None
 
 app = FastAPI(title="Financial Risk Intelligence API", version="1.0.0", lifespan=lifespan)
+Instrumentator().instrument(app).expose(app)
 
 @app.get("/health")
 def health_check():

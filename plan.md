@@ -343,18 +343,3 @@ financial-risk-compliance-intelligence/
 * **Performance:** p50/p95 latency, throughput under load
 * **Reliability:** error rate under Locust
 * **MLOps:** MLflow run IDs, model versions, dataset hashes
-
----
-
-## Timeline (Colab Free realistic)
-
-* Data + SFT + baseline: **3–5 days**
-* QLoRA fine-tune + eval: **3–6 days**
-* API + Docker + CI: **2–3 days**
-* Monitoring + load test: **2–4 days**
-  Total MVP: **~2–3 weeks**
-  Add EKS: **+1 week** (optional)
-
----
-
-If you want, I can also give you the **exact SFT prompt templates** (QA + risk summary) and the **evaluation harness** (F1/EM + factuality proxy) tailored to EDGAR sections—those two pieces are what make this project “real” in interviews.

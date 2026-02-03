@@ -1,0 +1,30 @@
+# Exclude huge data/model files
+llama-3-8b-financial-risk/
+sec-edgar-filings/
+data/
+wandb/
+models/
+adapters/
+
+# Exclude secrets and envs
+.env
+.venv/
+venv/
+env/
+
+# Exclude system/IDE files
+__pycache__/
+*.py[cod]
+.git/
+.gitignore
+.dockerignore
+.DS_Store
+.idea/
+.vscode/
+
+# Exclude documentation and local scripts/artifacts
+results/
+docs/
+PROJECT_ANALYSIS.md
+plan.md
+task.md

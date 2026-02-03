@@ -10,8 +10,11 @@ venv/
 .env
 
 # Data (Don't commit large files)
-data/
-!data/manifests/
+# Data (Don't commit large files)
+data/processed/
+data/raw/
+!data/ingest/
+!data/preprocess/
 results/
 models/
 adapters/
