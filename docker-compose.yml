@@ -12,6 +12,7 @@ services:
     environment:
       # Use the local path inside the container
       - ADAPTER_PATH=./llama-3-8b-financial-risk
+      - MOCK_MODEL=true
     restart: always
 
   prometheus:

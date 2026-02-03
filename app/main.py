@@ -35,6 +35,14 @@ async def lifespan(app: FastAPI):
     # Load model on startup
     global model, tokenizer
     print("Loading model... (This may take time)")
+    
+    if os.getenv("MOCK_MODEL", "false").lower() == "true":
+        print("🧪 MOCK_MODEL=true: Skipping heavy model load for DevOps verification.")
+        model = "mock"
+        tokenizer = "mock"
+        yield
+        return
+
     model_path = "./llama-3-8b-financial-risk" # Force use local fine-tuned model
     # model_path = os.getenv("MODEL_PATH", "meta-llama/Meta-Llama-3-8B-Instruct")
     try:
@@ -71,7 +79,6 @@ async def lifespan(app: FastAPI):
     yield
     
     # Cleaning up
-    # Cleaning up
     model = None
 
 app = FastAPI(title="Financial Risk Intelligence API", version="1.0.0", lifespan=lifespan)
@@ -86,7 +93,7 @@ async def analyze_risk(request: AnalysisRequest):
     """
     Analyzes the provided text for risks based on the query.
     """
-    if model is None:
+    if model is None or model == "mock":
         # Mock response for local testing without full weights
         return {
             "answer": f"Simulated Analysis: Based on the section provided, regarding '{request.query}', the primary risks involve regulatory uncertainty and market volatility. (Model not loaded locally)",
