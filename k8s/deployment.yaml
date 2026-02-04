@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: risk-api
+  labels:
+    app: risk-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: risk-api
+  template:
+    metadata:
+      labels:
+        app: risk-api
+    spec:
+      containers:
+      - name: risk-api
+        image: financial-risk-compliance-intelligence-api:latest
+        imagePullPolicy: IfNotPresent # Use local image built by Docker
+        ports:
+        - containerPort: 8000
+        env:
+        - name: MODEL_PATH
+          value: "./llama-3-8b-financial-risk"
+        resources:
+          requests:
+            memory: "8Gi"
+            cpu: "2"
+          limits:
+            memory: "16Gi"
+            cpu: "4"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8000
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 8000
+          initialDelaySeconds: 5
+          periodSeconds: 10

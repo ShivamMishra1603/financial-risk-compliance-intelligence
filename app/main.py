@@ -36,13 +36,6 @@ async def lifespan(app: FastAPI):
     global model, tokenizer
     print("Loading model... (This may take time)")
     
-    if os.getenv("MOCK_MODEL", "false").lower() == "true":
-        print("🧪 MOCK_MODEL=true: Skipping heavy model load for DevOps verification.")
-        model = "mock"
-        tokenizer = "mock"
-        yield
-        return
-
     model_path = "./llama-3-8b-financial-risk" # Force use local fine-tuned model
     # model_path = os.getenv("MODEL_PATH", "meta-llama/Meta-Llama-3-8B-Instruct")
     try:
@@ -74,6 +67,7 @@ async def lifespan(app: FastAPI):
 
     except Exception as e:
         print(f"❌ Critical Error loading model: {e}")
+        # In a real app, we might want to crash here, or fallback
         model = None
     
     yield
@@ -86,19 +80,17 @@ Instrumentator().instrument(app).expose(app)
 
 @app.get("/health")
 def health_check():
-    return {"status": "healthy", "model_loaded": model is not None}
+    if model is None:
+         raise HTTPException(status_code=503, detail="Model not loaded")
+    return {"status": "healthy", "model_loaded": True}
 
 @app.post("/analyze", response_model=AnalysisResponse)
 async def analyze_risk(request: AnalysisRequest):
     """
     Analyzes the provided text for risks based on the query.
     """
-    if model is None or model == "mock":
-        # Mock response for local testing without full weights
-        return {
-            "answer": f"Simulated Analysis: Based on the section provided, regarding '{request.query}', the primary risks involve regulatory uncertainty and market volatility. (Model not loaded locally)",
-            "risk_score": 0.85
-        }
+    if model is None:
+        raise HTTPException(status_code=503, detail="Model is loading or failed to load")
     
     # Real Inference Logic
     prompt = f"""<|begin_of_text|><|start_header_id|>system<|end_header_id|>
